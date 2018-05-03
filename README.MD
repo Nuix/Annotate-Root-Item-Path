@@ -4,7 +4,7 @@ Annotate Root Item Path
 
 ![Last tested in Nuix 7.4](https://img.shields.io/badge/Nuix-7.4-green.svg)
 
-View the GitHub project [here](https://github.com/NuixSDK/Annotate-Root-Item-Path) or download the latest release [here](https://github.com/NuixSDK/Annotate-Root-Item-Path/releases).
+View the GitHub project [here](https://github.com/Nuix/Annotate-Root-Item-Path) or download the latest release [here](https://github.com/Nuix/Annotate-Root-Item-Path/releases).
 
 # Overview
 
