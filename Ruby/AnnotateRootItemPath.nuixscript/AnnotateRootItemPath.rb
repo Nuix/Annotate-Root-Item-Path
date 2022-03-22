@@ -37,6 +37,7 @@ end
 main_tab.appendSpinner("root_item_path_depth","Root Item Path Depth",4,1,100)
 main_tab.appendCheckBox("include_evidence_container","Include Evidence Container",true)
 main_tab.appendTextField("custom_field_name","Custom Field Name","Root Item Path")
+main_tab.appendCheckBox("inverted_result","Invert Result",false)
 
 dialog.validateBeforeClosing do |values|
 	if values["custom_field_name"].strip.empty?
@@ -59,6 +60,7 @@ if dialog.getDialogResult == true
 	root_item_path_depth = values["root_item_path_depth"]
 	include_evidence_container = values["include_evidence_container"]
 	custom_field_name = values["custom_field_name"]
+	inverted_result = values["inverted_result"]
 
 	ProgressDialog.forBlock do |pd|
 		$window.closeAllTabs
@@ -83,14 +85,26 @@ if dialog.getDialogResult == true
 		pd.setMainProgress(0,items.size)
 
 		items.each_with_index do |item,item_index|
+			break if pd.abortWasRequested
+
 			path_names = item.getLocalisedPathNames.to_a
-			if !include_evidence_container
-				path_names.shift
+
+			value_to_record = ""
+
+			if inverted_result
+				if path_names.size > root_item_path_depth
+					value_to_record = path_names.drop(root_item_path_depth).join("/")
+				end
+			else
+				if !include_evidence_container
+					path_names.shift
+				end
+
+				root_path_names = path_names.take(root_item_path_depth)
+				value_to_record = root_path_names.join("/")
 			end
 
-			root_path_names = path_names.take(root_item_path_depth)
-			root_path = root_path_names.join("/")
-			annotater.putCustomMetadata(custom_field_name,root_path,Array(item),"text","user",nil,nil)
+			annotater.putCustomMetadata(custom_field_name,value_to_record,Array(item),"text","user",nil,nil)
 
 			if (Time.now - last_progress) > 1 || (item_index+1) == items.size
 				pd.setMainStatus("Processing Items #{item_index+1}/#{items.size}")
@@ -100,7 +114,11 @@ if dialog.getDialogResult == true
 		end
 		finish_time = Time.now
 
-		pd.setCompleted
+		if pd.abortWasRequested
+			pd.setMainStatusAndLogIt("User Aborted")
+		else
+			pd.setCompleted
+		end
 		pd.logMessage("#{finish_time - start_time} seconds")
 		query = "custom-metadata:\"#{custom_field_name}\":*"
 		$window.openTab("workbench",{:search => query})
