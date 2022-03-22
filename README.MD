@@ -44,6 +44,14 @@ Begin by downloading the latest release of this code.  Extract the contents of t
 | **Custom Field Name**          | The name of the custom metadata field the value will be recorded to.                   |
 | **Invert Result**              | When checked, rather than keeping first N items' path names, value will instead be everything *but* the first N items' path names. |
 
+# Cloning this Repository
+
+This script relies on code from [Nx](https://github.com/Nuix/Nx) to present a settings dialog and progress dialog.  This JAR file is not included in the repository (although it is included in release downloads).  If you clone this repository, you will also want to obtain a copy of Nx.jar by either:
+1. Building it from [the source](https://github.com/Nuix/Nx)
+2. Downloading an already built JAR file from the [Nx releases](https://github.com/Nuix/Nx/releases)
+
+Once you have a copy of Nx.jar, make sure to include it in the same directory as the script.
+
 # License
 
 ```
